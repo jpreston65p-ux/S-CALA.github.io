@@ -918,9 +918,7 @@
     function hideTyping(){const e=$('#typInd');if(e)e.remove()}
     function scrollBot(){requestAnimationFrame(()=>{chatArea.scrollTop=chatArea.scrollHeight})}
 
-    // =========================================================================
-    // AQUI ES DONDE OCURRE LA MAGIA: CONEXIÓN REAL CON PYTHON E INTELIGENCIA ARTIFICIAL
-    // =========================================================================
+    /* ===== CONEXIÓN REAL CON EL PASTOR SCALA EN RENDER ===== */
     function sendMsg(text){
       if(!text.trim()||S.typing)return;
       if(!S.active)newConv(text.trim());
@@ -937,8 +935,8 @@
       S.typing=true;
       setTimeout(showTyping,200);
       
-      // Petición al servidor de Python
-      fetch('http://localhost:5000/chat', {
+      // CAMBIO CLAVE: Dirección de tu servidor en Render
+      fetch('https://api-pastor-scalas.onrender.com/chat', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -951,7 +949,7 @@
           S.typing=false;
           
           const resp = datos.respuesta;
-          const res = getRelatedResources(text); // Tus tarjetas visuales
+          const res = getRelatedResources(text); 
           
           const pt = appendMsg('pastor', resp, res);
           S.curMsgs.push({role:'pastor', content:resp, time:pt, resources:res});
@@ -960,13 +958,12 @@
       .catch(error => {
           hideTyping();
           S.typing=false;
-          const errorMsg = "Disculpa, no puedo conectarme al servidor en este momento. Por favor, verifica que 'servidor.py' esté ejecutándose en tu terminal.";
+          const errorMsg = "Mis disculpas, parece que mis servidores están descansando o despertando. Si es el primer mensaje del día, puedo tardar un minuto en reaccionar. Por favor, intenta de nuevo.";
           const pt = appendMsg('pastor', errorMsg);
           S.curMsgs.push({role:'pastor', content:errorMsg, time:pt});
           updateConv();
       });
     }
-    // =========================================================================
 
     /* ===== AUTH ===== */
     function openAuth(m='login'){showFrm(m);authOv.classList.add('open');clearErr()}
